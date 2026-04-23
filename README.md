@@ -14,13 +14,12 @@ A real-time water quality monitoring solution using Arduino. This system tracks 
   - **Expandable**: Calibration offsets built-in for fine-tuning sensor accuracy.
 
 ## Monitored Parameters
-
-| **Parameter** | Sensor Type | Unit | Pin |
+| Parameter | Sensor Type | Unit | Pin |
+| :--- | :--- | :--- | :--- |
 | **Temperature** | DS18B20 (Digital) | °C | Digital 2 |
 | **Dissolved Oxygen** | Analog Probe | mg/L | Analog 0 |
 | **pH Level** | Analog Probe | pH | Analog 1 |
 | **Turbidity** | Analog Optical | NTU | Analog 2 |
-
 ## Hardware Requirements
 
   * **Microcontroller**: Arduino Uno, Nano, or Mega.
@@ -63,5 +62,5 @@ The system outputs a CSV-style string every 5 seconds via SoftwareSerial:
 
 Contact:
 Your Name - mp.aarthi@outlook.in
-Project Link: [https://github.com/yourusername/aquaculture-monitor](https://www.google.com/search?q=https://github.com/yourusername/aquaculture-monitor)
+Project Link: [https://github.com/Aarthip18/Aqua-Monitor-System]
 
