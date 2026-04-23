@@ -1,6 +1,5 @@
 # Aqua-Monitor-System
 This Arduino-based Aquaculture Monitoring System provides real-time tracking of water quality. It measures Temperature, pH, Dissolved Oxygen, and Turbidity using analog and 1-Wire sensors. Data is broadcasted via USB and SoftwareSerial for Bluetooth/LoRa integration, ensuring optimal conditions for aquatic life through precise environment tracking.
-Since you've provided the code for an **Aquaculture Monitoring System**, I’ve generated a tailored `README.md` that explains exactly what this code does, how to wire the sensors, and how to calibrate it.
 
 # 🐟 Aquaculture Monitoring System
 
