@@ -1,0 +1,100 @@
+#include <Wire.h>
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <SoftwareSerial.h>
+
+// Sensor Pins
+#define TEMP_SENSOR_PIN 2      // DS18B20 Temperature sensor (1-Wire)
+#define DO_SENSOR_PIN A0       // Dissolved Oxygen (Analog)
+#define PH_SENSOR_PIN A1       // pH Sensor (Analog)
+#define TURBIDITY_SENSOR_PIN A2 // Turbidity Sensor (Analog)
+
+// For Serial Communication (UART or SoftwareSerial)
+#define RX_PIN 10
+#define TX_PIN 11
+SoftwareSerial serialMonitor(RX_PIN, TX_PIN); // For Bluetooth/Serial Monitor
+
+// Initialize DS18B20 Temperature Sensor
+OneWire oneWire(TEMP_SENSOR_PIN);
+DallasTemperature tempSensor(&oneWire);
+
+// Calibration Values (Adjust based on sensor specs)
+float PH_CALIBRATION_OFFSET = 0.0;  // Adjust pH calibration
+float DO_CALIBRATION_OFFSET = 0.0;  // Adjust DO calibration
+
+void setup() {
+  Serial.begin(9600);       // USB Serial (for debugging)
+  serialMonitor.begin(9600); // SoftwareSerial (for Bluetooth/other devices)
+  
+  tempSensor.begin();       // Start temperature sensor
+  
+  Serial.println("Aquaculture Monitoring System - Initialized");
+  serialMonitor.println("Aquaculture Monitoring System - Ready");
+}
+
+void loop() {
+  // Read all sensors
+  float temperature = readTemperature();
+  float dissolvedOxygen = readDissolvedOxygen();
+  float phValue = readPH();
+  float turbidity = readTurbidity();
+
+  // Print to Serial Monitor (USB)
+  Serial.print("Temperature: ");
+  Serial.print(temperature);
+  Serial.println(" °C");
+  
+  Serial.print("Dissolved Oxygen: ");
+  Serial.print(dissolvedOxygen);
+  Serial.println(" mg/L");
+  
+  Serial.print("pH: ");
+  Serial.print(phValue);
+  Serial.println(" pH");
+  
+  Serial.print("Turbidity: ");
+  Serial.print(turbidity);
+  Serial.println(" NTU");
+  Serial.println("------------------");
+
+  // Send data via SoftwareSerial (Bluetooth, LoRa, etc.)
+  serialMonitor.print("T:");
+  serialMonitor.print(temperature);
+  serialMonitor.print(",DO:");
+  serialMonitor.print(dissolvedOxygen);
+  serialMonitor.print(",pH:");
+  serialMonitor.print(phValue);
+  serialMonitor.print(",TURB:");
+  serialMonitor.println(turbidity);
+
+  delay(5000); // Wait 5 seconds before next reading
+}
+
+// Read Temperature (DS18B20)
+float readTemperature() {
+  tempSensor.requestTemperatures();
+  return tempSensor.getTempCByIndex(0);
+}
+
+// Read Dissolved Oxygen (Analog Sensor)
+float readDissolvedOxygen() {
+  int rawValue = analogRead(DO_SENSOR_PIN);
+  float voltage = rawValue * (5.0 / 1024.0);
+  float doValue = (voltage + DO_CALIBRATION_OFFSET) * 2.0; // Calibration may vary
+  return doValue;
+}
+
+// Read pH (Analog Sensor)
+float readPH() {
+  int rawValue = analogRead(PH_SENSOR_PIN);
+  float voltage = rawValue * (5.0 / 1024.0);
+  float phValue = (3.5 * voltage) + PH_CALIBRATION_OFFSET; // Calibration needed
+  return phValue;
+}
+
+// Read Turbidity (Analog Sensor)
+float readTurbidity() {
+  int rawValue = analogRead(TURBIDITY_SENSOR_PIN);
+  float turbidity = map(rawValue, 0, 1023, 0, 100); // Convert to NTU (0-100)
+  return turbidity;
+}
